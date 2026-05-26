@@ -113,6 +113,11 @@ function updateCalculator() {
   document.querySelector(".stats .card:nth-child(3) small").innerText =
     customerShare + "%";
 
+  // Update aria-valuenow for progress bars (accessibility)
+  document.querySelector(".stats .card:nth-child(1) .progress").setAttribute("aria-valuenow", "100");
+  document.querySelector(".stats .card:nth-child(2) .progress").setAttribute("aria-valuenow", leadShare);
+  document.querySelector(".stats .card:nth-child(3) .progress").setAttribute("aria-valuenow", customerShare);
+
   updateChart(prospects, leads, customers);
 }
 
