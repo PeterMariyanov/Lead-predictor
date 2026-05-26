@@ -9,6 +9,8 @@ const prospectRateLabel = document.getElementById("prospectRateLabel");
 const prospectsValue = document.getElementById("prospectsValue");
 const leadsValue = document.getElementById("leadsValue");
 const customersValue = document.getElementById("customersValue");
+const campaignStartInput = document.getElementById("campaignStart");
+const campaignEndInput = document.getElementById("campaignEnd");
 
 const prospectsProgress = document.querySelector(".stats .card:nth-child(1) .progress span");
 const leadsProgress = document.querySelector(".stats .card:nth-child(2) .progress span");
@@ -151,6 +153,14 @@ function updateCalculator() {
 
 leadRate.addEventListener("input", updateCalculator);
 prospectRate.addEventListener("input", updateCalculator);
+revenueInput.addEventListener("input", updateCalculator);
+aovInput.addEventListener("input", updateCalculator);
+if (campaignStartInput) {
+  campaignStartInput.addEventListener("change", updateCalculator);
+}
+if (campaignEndInput) {
+  campaignEndInput.addEventListener("change", updateCalculator);
+}
 
 const ctx = document.getElementById("leadChart");
 
