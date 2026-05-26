@@ -70,15 +70,7 @@ function setLanguage(lang) {
   localStorage.setItem('lp_lang', lang);
   applyTranslations(lang);
 }
-
-const languageSelect = document.getElementById('languageSelect');
-if (languageSelect) {
-  const saved = localStorage.getItem('lp_lang') || 'en';
-  languageSelect.value = saved;
-  applyTranslations(saved);
-  languageSelect.addEventListener('change', e => setLanguage(e.target.value));
-}
-// ----- end i18n -----
+// ----- end i18n functions -----
 
 function updateCalculator() {
   const revenue = parseFloat(revenueInput.value) || 0;
@@ -290,3 +282,13 @@ function updateChart(prospects, leads, customers) {
 }
 
 updateCalculator();
+
+// ----- Initialize i18n after chart and calculator are ready -----
+const languageSelect = document.getElementById('languageSelect');
+if (languageSelect) {
+  const saved = localStorage.getItem('lp_lang') || 'en';
+  languageSelect.value = saved;
+  applyTranslations(saved);
+  languageSelect.addEventListener('change', e => setLanguage(e.target.value));
+}
+// ----- end i18n init -----
