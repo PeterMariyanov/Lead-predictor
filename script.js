@@ -14,6 +14,64 @@ const prospectsProgress = document.querySelector(".stats .card:nth-child(1) .pro
 const leadsProgress = document.querySelector(".stats .card:nth-child(2) .progress span");
 const customersProgress = document.querySelector(".stats .card:nth-child(3) .progress span");
 
+// ----- i18n scaffold -----
+const i18n = {
+  en: {
+    languageLabel: "Language",
+    currencyLabel: "Currency",
+    campaignStart: "Campaign Start",
+    campaignEnd: "Campaign End",
+    totalRevenue: "Total Revenue",
+    avgOrderValue: "Avg. Order Value",
+    prospects: "📁 Prospects",
+    leads: "👤 Leads",
+    customers: "🏆 Customers",
+    leadResponseRate: "Lead Response Rate",
+    prospectResponseRate: "Prospect Response Rate",
+    customersLabel: "Customers",
+    leadsLabel: "Leads",
+    prospectsLabel: "Prospects"
+  },
+  bg: {
+    languageLabel: "Език",
+    currencyLabel: "Валута",
+    campaignStart: "Начало на кампанията",
+    campaignEnd: "Край на кампанията",
+    totalRevenue: "Общо приходи",
+    avgOrderValue: "Средна стойност на поръчка",
+    prospects: "📁 Контакти",
+    leads: "👤 Лийдове",
+    customers: "🏆 Клиенти",
+    leadResponseRate: "Честота на отговор (лийдове)",
+    prospectResponseRate: "Честота на отговор (контакти)",
+    customersLabel: "Клиенти",
+    leadsLabel: "Лийдове",
+    prospectsLabel: "Контакти"
+  }
+};
+
+function applyTranslations(lang) {
+  const t = i18n[lang] || i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key]) el.innerText = t[key];
+  });
+
+  // update chart dataset labels if chart exists
+  if (typeof chart !== 'undefined' && chart.data && chart.data.datasets) {
+    chart.data.datasets[0].label = t.customersLabel || chart.data.datasets[0].label;
+    chart.data.datasets[1].label = t.leadsLabel || chart.data.datasets[1].label;
+    chart.data.datasets[2].label = t.prospectsLabel || chart.data.datasets[2].label;
+    chart.update();
+  }
+}
+
+function setLanguage(lang) {
+  localStorage.setItem('lp_lang', lang);
+  applyTranslations(lang);
+}
+// ----- end i18n functions -----
+
 function updateCalculator() {
   const revenue = parseFloat(revenueInput.value) || 0;
   const aov = parseFloat(aovInput.value) || 1;
@@ -54,6 +112,11 @@ function updateCalculator() {
 
   document.querySelector(".stats .card:nth-child(3) small").innerText =
     customerShare + "%";
+
+  // Update aria-valuenow for progress bars (accessibility)
+  document.querySelector(".stats .card:nth-child(1) .progress").setAttribute("aria-valuenow", "100");
+  document.querySelector(".stats .card:nth-child(2) .progress").setAttribute("aria-valuenow", leadShare);
+  document.querySelector(".stats .card:nth-child(3) .progress").setAttribute("aria-valuenow", customerShare);
 
   updateChart(prospects, leads, customers);
 }
@@ -224,3 +287,24 @@ function updateChart(prospects, leads, customers) {
 }
 
 updateCalculator();
+
+// ----- Initialize i18n after chart and calculator are ready -----
+const languageSelect = document.getElementById('languageSelect');
+const flagElements = document.querySelectorAll('.language-flags span');
+
+if (languageSelect) {
+  const saved = localStorage.getItem('lp_lang') || 'en';
+  languageSelect.value = saved;
+  applyTranslations(saved);
+  languageSelect.addEventListener('change', e => setLanguage(e.target.value));
+  
+  // Add click handlers for flag displays
+  flagElements.forEach(flag => {
+    flag.addEventListener('click', () => {
+      const lang = flag.classList.contains('flag-en') ? 'en' : 'bg';
+      languageSelect.value = lang;
+      setLanguage(lang);
+    });
+  });
+}
+// ----- end i18n init -----
