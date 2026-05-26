@@ -285,10 +285,21 @@ updateCalculator();
 
 // ----- Initialize i18n after chart and calculator are ready -----
 const languageSelect = document.getElementById('languageSelect');
+const flagElements = document.querySelectorAll('.language-flags span');
+
 if (languageSelect) {
   const saved = localStorage.getItem('lp_lang') || 'en';
   languageSelect.value = saved;
   applyTranslations(saved);
   languageSelect.addEventListener('change', e => setLanguage(e.target.value));
+  
+  // Add click handlers for flag displays
+  flagElements.forEach(flag => {
+    flag.addEventListener('click', () => {
+      const lang = flag.classList.contains('flag-en') ? 'en' : 'bg';
+      languageSelect.value = lang;
+      setLanguage(lang);
+    });
+  });
 }
 // ----- end i18n init -----
