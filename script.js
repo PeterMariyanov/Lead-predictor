@@ -11,6 +11,7 @@ const leadsValue = document.getElementById("leadsValue");
 const customersValue = document.getElementById("customersValue");
 const campaignStartInput = document.getElementById("campaignStart");
 const campaignEndInput = document.getElementById("campaignEnd");
+const currencySelect = document.getElementById("currencySelect");
 
 const prospectsProgress = document.querySelector(".stats .card:nth-child(1) .progress span");
 const leadsProgress = document.querySelector(".stats .card:nth-child(2) .progress span");
@@ -100,6 +101,43 @@ function updateLanguageBox(lang) {
     languageBoxImage.alt = selected.alt;
   }
 }
+
+function updateCurrencySymbols(symbol) {
+  document.querySelectorAll('[data-currency-symbol]').forEach(el => {
+    el.textContent = symbol;
+  });
+}
+
+function getChartLabels(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const months = [];
+  if (isNaN(start) || isNaN(end)) {
+    return Array.from({ length: 6 }, (_, i) => `Month ${i + 1}`);
+  }
+
+  let current = new Date(start.getFullYear(), start.getMonth(), 1);
+  let target = new Date(end.getFullYear(), end.getMonth(), 1);
+  if (current > target) {
+    [current, target] = [target, current];
+  }
+
+  while (current <= target) {
+    months.push(current.toLocaleString('en-US', { month: 'short', year: 'numeric' }));
+    current.setMonth(current.getMonth() + 1);
+  }
+
+  return months.length > 0 ? months : [start.toLocaleString('en-US', { month: 'short', year: 'numeric' })];
+}
+
+function generateSeries(lastValue, length) {
+  return Array.from({ length }, (_, index) => {
+    if (index === length - 1) return lastValue;
+    const ratio = (index + 1) / length;
+    return Math.max(1, Math.round(lastValue * ratio));
+  });
+}
+
 // ----- end i18n functions -----
 
 function updateCalculator() {
@@ -160,6 +198,14 @@ if (campaignStartInput) {
 }
 if (campaignEndInput) {
   campaignEndInput.addEventListener("change", updateCalculator);
+}
+if (currencySelect) {
+  const symbol = currencySelect.value === 'eur' ? '€' : '$';
+  updateCurrencySymbols(symbol);
+  currencySelect.addEventListener('change', e => {
+    const selected = e.target.value;
+    updateCurrencySymbols(selected === 'eur' ? '€' : '$');
+  });
 }
 
 const ctx = document.getElementById("leadChart");
@@ -290,36 +336,15 @@ let chart = new Chart(ctx, {
 });
 
 function updateChart(prospects, leads, customers) {
+  const startDate = campaignStartInput ? campaignStartInput.value : '';
+  const endDate = campaignEndInput ? campaignEndInput.value : '';
+  const labels = getChartLabels(startDate, endDate);
+  const length = labels.length;
 
-  // Customers (white top)
-  chart.data.datasets[0].data = [
-    2,
-    3,
-    5,
-    7,
-    8,
-    customers
-  ];
-
-  // Leads (middle)
-  chart.data.datasets[1].data = [
-    6,
-    9,
-    13,
-    18,
-    21,
-    leads
-  ];
-
-  // Prospects (bottom)
-  chart.data.datasets[2].data = [
-    25,
-    45,
-    63,
-    85,
-    105,
-    prospects
-  ];
+  chart.data.labels = labels;
+  chart.data.datasets[0].data = generateSeries(customers, length);
+  chart.data.datasets[1].data = generateSeries(leads, length);
+  chart.data.datasets[2].data = generateSeries(prospects, length);
 
   chart.update();
 }
