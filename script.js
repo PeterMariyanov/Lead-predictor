@@ -69,6 +69,34 @@ function applyTranslations(lang) {
 function setLanguage(lang) {
   localStorage.setItem('lp_lang', lang);
   applyTranslations(lang);
+  updateLanguageBox(lang);
+}
+
+const languageOptions = {
+  en: {
+    label: 'English',
+    src: 'https://flagcdn.com/w40/us.png',
+    alt: 'US flag'
+  },
+  bg: {
+    label: 'Български',
+    src: 'https://flagcdn.com/w40/bg.png',
+    alt: 'Bulgarian flag'
+  }
+};
+
+const languageBoxLabel = document.getElementById('languageBoxLabel');
+const languageBoxImage = document.querySelector('.language-box img');
+
+function updateLanguageBox(lang) {
+  const selected = languageOptions[lang] || languageOptions.en;
+  if (languageBoxLabel) {
+    languageBoxLabel.innerText = selected.label;
+  }
+  if (languageBoxImage) {
+    languageBoxImage.src = selected.src;
+    languageBoxImage.alt = selected.alt;
+  }
 }
 // ----- end i18n functions -----
 
@@ -290,21 +318,12 @@ updateCalculator();
 
 // ----- Initialize i18n after chart and calculator are ready -----
 const languageSelect = document.getElementById('languageSelect');
-const flagElements = document.querySelectorAll('.language-flags span');
 
 if (languageSelect) {
   const saved = localStorage.getItem('lp_lang') || 'en';
   languageSelect.value = saved;
   applyTranslations(saved);
+  updateLanguageBox(saved);
   languageSelect.addEventListener('change', e => setLanguage(e.target.value));
-  
-  // Add click handlers for flag displays
-  flagElements.forEach(flag => {
-    flag.addEventListener('click', () => {
-      const lang = flag.classList.contains('flag-en') ? 'en' : 'bg';
-      languageSelect.value = lang;
-      setLanguage(lang);
-    });
-  });
 }
 // ----- end i18n init -----
