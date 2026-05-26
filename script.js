@@ -39,14 +39,14 @@ const i18n = {
     campaignEnd: "Край на кампанията",
     totalRevenue: "Общо приходи",
     avgOrderValue: "Средна стойност на поръчка",
-    prospects: "📁 Перспективи",
+    prospects: "📁 Контакти",
     leads: "👤 Лийдове",
     customers: "🏆 Клиенти",
     leadResponseRate: "Честота на отговор (лийдове)",
-    prospectResponseRate: "Честота на отговор (перспективи)",
+    prospectResponseRate: "Честота на отговор (контакти)",
     customersLabel: "Клиенти",
     leadsLabel: "Лийдове",
-    prospectsLabel: "Перспективи"
+    prospectsLabel: "Контакти"
   }
 };
 
