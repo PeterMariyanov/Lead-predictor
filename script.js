@@ -14,6 +14,72 @@ const prospectsProgress = document.querySelector(".stats .card:nth-child(1) .pro
 const leadsProgress = document.querySelector(".stats .card:nth-child(2) .progress span");
 const customersProgress = document.querySelector(".stats .card:nth-child(3) .progress span");
 
+// ----- i18n scaffold -----
+const i18n = {
+  en: {
+    languageLabel: "Language",
+    currencyLabel: "Currency",
+    campaignStart: "Campaign Start",
+    campaignEnd: "Campaign End",
+    totalRevenue: "Total Revenue",
+    avgOrderValue: "Avg. Order Value",
+    prospects: "📁 Prospects",
+    leads: "👤 Leads",
+    customers: "🏆 Customers",
+    leadResponseRate: "Lead Response Rate",
+    prospectResponseRate: "Prospect Response Rate",
+    customersLabel: "Customers",
+    leadsLabel: "Leads",
+    prospectsLabel: "Prospects"
+  },
+  bg: {
+    languageLabel: "Език",
+    currencyLabel: "Валута",
+    campaignStart: "Начало на кампанията",
+    campaignEnd: "Край на кампанията",
+    totalRevenue: "Общо приходи",
+    avgOrderValue: "Средна стойност на поръчка",
+    prospects: "📁 Перспективи",
+    leads: "👤 Лийдове",
+    customers: "🏆 Клиенти",
+    leadResponseRate: "Честота на отговор (лийдове)",
+    prospectResponseRate: "Честота на отговор (перспективи)",
+    customersLabel: "Клиенти",
+    leadsLabel: "Лийдове",
+    prospectsLabel: "Перспективи"
+  }
+};
+
+function applyTranslations(lang) {
+  const t = i18n[lang] || i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key]) el.innerText = t[key];
+  });
+
+  // update chart dataset labels if chart exists
+  if (typeof chart !== 'undefined' && chart.data && chart.data.datasets) {
+    chart.data.datasets[0].label = t.customersLabel || chart.data.datasets[0].label;
+    chart.data.datasets[1].label = t.leadsLabel || chart.data.datasets[1].label;
+    chart.data.datasets[2].label = t.prospectsLabel || chart.data.datasets[2].label;
+    chart.update();
+  }
+}
+
+function setLanguage(lang) {
+  localStorage.setItem('lp_lang', lang);
+  applyTranslations(lang);
+}
+
+const languageSelect = document.getElementById('languageSelect');
+if (languageSelect) {
+  const saved = localStorage.getItem('lp_lang') || 'en';
+  languageSelect.value = saved;
+  applyTranslations(saved);
+  languageSelect.addEventListener('change', e => setLanguage(e.target.value));
+}
+// ----- end i18n -----
+
 function updateCalculator() {
   const revenue = parseFloat(revenueInput.value) || 0;
   const aov = parseFloat(aovInput.value) || 1;

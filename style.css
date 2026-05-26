@@ -5,6 +5,13 @@
   font-family: 'Inter', Arial, sans-serif;
 }
 
+:root {
+  --bg-0: #07101d;
+  --bg-1: #0f1729;
+  --accent: #06b6d4; /* turquoise */
+  --accent-2: #60a5fa; /* soft blue */
+}
+
 body {
   background: radial-gradient(circle at top, rgba(96, 165, 250, 0.14), transparent 28%),
               linear-gradient(180deg, #07101d 0%, #0f1729 100%);
@@ -153,6 +160,7 @@ body {
   position: relative;
   overflow: visible;
   min-height: 156px;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
 
 .card:nth-child(1) {
@@ -218,9 +226,15 @@ body {
 .progress span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #7c92ff 0%, #7dd3fc 100%);
+  background: linear-gradient(90deg, var(--accent-2) 0%, var(--accent) 100%);
   border-radius: 8px;
-  opacity: 0.9;
+  opacity: 0.95;
+  transition: width .45s cubic-bezier(.2,.9,.2,1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 40px 120px rgba(3, 7, 18, 0.6);
 }
 
 /* Sliders */
@@ -308,6 +322,11 @@ input[type="range"]::-moz-range-track {
 
   .card {
     flex: 1 1 calc(50% - 12px);
+    margin-top: 0; /* avoid vertical overlap on mid screens */
+  }
+
+  .card:nth-child(2), .card:nth-child(3) {
+    margin-top: 0;
   }
 }
 
