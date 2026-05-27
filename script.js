@@ -134,7 +134,7 @@ function generateSeries(lastValue, length) {
   return Array.from({ length }, (_, index) => {
     if (index === length - 1) return lastValue;
     const ratio = (index + 1) / length;
-    return Math.max(1, Math.round(lastValue * ratio));
+    return Math.max(0, Math.round(lastValue * ratio));
   });
 }
 
@@ -143,17 +143,27 @@ function generateSeries(lastValue, length) {
 function updateCalculator() {
   const revenue = parseFloat(revenueInput.value) || 0;
   const aov = parseFloat(aovInput.value) || 1;
-  const leadPercent = Math.max(1, parseInt(leadRate.value, 10) || 1);
-  const prospectPercent = Math.max(1, parseInt(prospectRate.value, 10) || 1);
+  const leadPercent = parseInt(leadRate.value, 10) || 0;
+  const prospectPercent = parseInt(prospectRate.value, 10) || 0;
 
   // Formula 01
   const customers = Math.ceil(revenue / aov);
 
-  // Formula 02
-  const leads = Math.ceil(customers * 100 / leadPercent);
+  // Formula 02 (handle 0% safely)
+  let leads;
+  if (leadPercent === 0) {
+    leads = 0;
+  } else {
+    leads = Math.ceil(customers * 100 / leadPercent);
+  }
 
-  // Formula 03
-  const prospects = Math.ceil(leads * 100 / prospectPercent);
+  // Formula 03 (handle 0% or zero leads safely)
+  let prospects;
+  if (prospectPercent === 0 || leads === 0) {
+    prospects = 0;
+  } else {
+    prospects = Math.ceil(leads * 100 / prospectPercent);
+  }
 
   leadRateLabel.innerText = leadPercent.toFixed(2) + "%";
   prospectRateLabel.innerText = prospectPercent.toFixed(2) + "%";
