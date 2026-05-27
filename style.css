@@ -58,15 +58,6 @@ body {
   font-size: 20px;
 }
 
-.logo-img {
-  width: 44px;
-  height: 44px;
-  display: inline-block;
-  border-radius: 10px;
-  object-fit: cover;
-  background: rgba(255,255,255,0.02);
-}
-
 .logo h1 {
   font-size: 24px;
   font-weight: 700;
