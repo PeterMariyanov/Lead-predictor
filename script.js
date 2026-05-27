@@ -143,17 +143,21 @@ function generateSeries(lastValue, length) {
 function updateCalculator() {
   const revenue = parseFloat(revenueInput.value) || 0;
   const aov = parseFloat(aovInput.value) || 1;
-  const leadPercent = Math.max(1, parseInt(leadRate.value, 10) || 1);
-  const prospectPercent = Math.max(1, parseInt(prospectRate.value, 10) || 1);
+  const leadPercent = parseInt(leadRate.value, 10) || 0;
+  const prospectPercent = parseInt(prospectRate.value, 10) || 0;
 
   // Formula 01
   const customers = Math.ceil(revenue / aov);
 
   // Formula 02
-  const leads = Math.ceil(customers * 100 / leadPercent);
+  const leads = leadPercent > 0
+    ? Math.ceil(customers * 100 / leadPercent)
+    : 0;
 
   // Formula 03
-  const prospects = Math.ceil(leads * 100 / prospectPercent);
+  const prospects = prospectPercent > 0
+    ? Math.ceil(leads * 100 / prospectPercent)
+    : 0;
 
   leadRateLabel.innerText = leadPercent.toFixed(2) + "%";
   prospectRateLabel.innerText = prospectPercent.toFixed(2) + "%";
